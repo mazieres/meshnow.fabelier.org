@@ -56,9 +56,9 @@
 		  	}
   			map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 
-  			google.maps.event.addListener(map, 'click', function(event) {
-    			alert('pouet');
-  			});
+  			// google.maps.event.addListener(map, 'click', function(event) {
+  			//     			alert('pouet');
+  			// });
 			
 			var myMarkerImageRed = new google.maps.MarkerImage('./img/wifi_spot_1.gif');
 			var myMarkerImageBlack = new google.maps.MarkerImage('./img/wifi_spot_0.gif');
@@ -68,7 +68,17 @@
 			$query = sqlite_query($dbhandle, 'SELECT * FROM commit_nodes');
 			$result = sqlite_fetch_all($query, SQLITE_ASSOC);
 			foreach ($result as $entry) {
-				echo 'var myMarker' . $entry['id'] . '= new google.maps.Marker({position: new google.maps.LatLng(' . $entry['latitude'] . ',' . $entry['longitude'] . '), map: map, icon: myMarkerImageBlack, optimized: false});';
+				echo 'var contentCommitMarker' . $entry['id'] . ' = "<p>Latitude: ' . $entry['latitude'] . ' </p><p>Longitude: ' . $entry['longitude'] . '</p><p>Altitude: ' . $entry['Altitude'] . '</p><p>Internet ? ' . $entry['internet'] . '</p><p>Contact: ' . $entry['email'] . '</p>";
+
+				var infoCommitMarker' . $entry['id'] . ' = new google.maps.InfoWindow({
+				    content: contentCommitMarker' . $entry['id'] . '
+				});
+
+				var CommitMarker' . $entry['id'] . '= new google.maps.Marker({position: new google.maps.LatLng(' . $entry['latitude'] . ',' . $entry['longitude'] . '), map: map, icon: myMarkerImageBlack, optimized: false});
+
+				google.maps.event.addListener(CommitMarker' . $entry['id'] . ', "click", function() {
+				  infoNotifyMarker' . $entry['id'] . '.open(map,CommitMarker' . $entry['id'] . ');
+				});';
 			}
 			?>
 			<?php 
@@ -76,7 +86,17 @@
 			$query = sqlite_query($dbhandle, 'SELECT * FROM notify_nodes');
 			$result = sqlite_fetch_all($query, SQLITE_ASSOC);
 			foreach ($result as $entry) {
-				echo 'var myMarker' . $entry['id'] . '= new google.maps.Marker({position: new google.maps.LatLng(' . $entry['latitude'] . ',' . $entry['longitude'] . '), map: map, icon: myMarkerImageRed, optimized: false});';
+				echo 'var contentNotifyMarker' . $entry['id'] . ' = "<p>Latitude: ' . $entry['latitude'] . ' </p><p>Longitude: ' . $entry['longitude'] . '</p><p>Altitude: ' . $entry['Altitude'] . '</p><p>Radio: ' . $entry['radio'] . '</p><p>Protocol: ' . $entry['protocol'] . '</p><p>Canal: ' . $entry['canal'] . '</p><p>SSID: ' . $entry['ssid'] . '</p><p>Operating System: ' . $entry['os'] . '</p><p>Internet ? ' . $entry['internet'] . '</p><p>Contact: ' . $entry['email'] . '</p>";
+
+				var infoNotifyMarker' . $entry['id'] . ' = new google.maps.InfoWindow({
+				    content: contentNotifyMarker' . $entry['id'] . '
+				});
+
+				var NotifyMarker' . $entry['id'] . '= new google.maps.Marker({position: new google.maps.LatLng(' . $entry['latitude'] . ',' . $entry['longitude'] . '), map: map, icon: myMarkerImageRed, optimized: false});
+
+				google.maps.event.addListener(NotifyMarker' . $entry['id'] . ', "click", function() {
+				  infoNotifyMarker' . $entry['id'] . '.open(map,NotifyMarker' . $entry['id'] . ');
+				});';
 			}
 			?>
 		}
